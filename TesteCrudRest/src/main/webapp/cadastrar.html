@@ -1,0 +1,136 @@
+<html ng-app="primeiroModulo">
+<head>
+<meta charset="UTF-8" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+<script type="text/javascript">
+	angular.module('primeiroModulo', []).controller('primeiroControle', ['$http', function($http){
+		self = this;
+		self.nome='';
+		console.log(this.nome);	
+		var indice;
+		self.resposta = {};
+		self.times = ["Palmeiras", "Santos", "Gremio"];
+		
+		self.clientes = [{nome: 'José', email: 'jose@gmail.com'}, 
+								{nome: 'Maria', email: 'maria@gmail.com'}];
+		
+		self.mostrarNome = function(){
+			self.nome='José';
+		};
+		self.enviarDados = function(){
+			//if(indice == 1){
+				//self.clientes[indice] = self.cliente;
+				
+			//}else{
+				self.clientes.push(self.cliente);
+				//self.clientes.push(self.cliente);
+			//}
+			
+			self.cliente='';
+			
+		};
+
+		self.cadastrarWebService = function(){
+			/*$http.post('http://localhost:8080/TesteCrudRest/resource/cliente/inserir', self.cliente).then(function(response){
+					self.resposta=response.data;
+					console.log('chamou o web service: '+self.resposta);
+				}, function(errResponse){
+					console.error('Erro ao chamar o web service');
+					});*/
+// 			$http.post('http://localhost:8080/TesteCrudRest/resource/cliente/inserir', self.cliente).then(function(response){
+// 				self.resposta=JSON.parse(response.data);
+// 				console.log('chamou o web service: '+self.resposta);
+// 			}, function(errResponse){
+// 				console.error('Erro ao chamar o web service');
+// 				});
+
+					$http.get('http://localhost:8080/TesteCrudRest/resource/cliente/listar').then(function(response){
+		 				self.clientes=response.data;
+		 				console.log('chamou o web service: '+self.resposta);
+		 			}, function(errResponse){
+		 				console.error('Erro ao chamar o web service');
+		 				});
+
+			};
+		
+		self.remover = function(index){
+			self.clientes.splice(index, 1);		
+		};
+		self.mostrarSelecionado = function(index){
+			//alert(self.clientes[index].nome);	
+			self.cliente=self.clientes[index];
+			indice=index;
+		};
+	}]);
+
+</script>
+
+</head>
+
+<body ng-controller="primeiroControle as ctrl">
+
+	<h4>Classificação da última rodada do brasileirão 2016</h4>
+	<ol>
+		<!--<li ng-repeat="t in ctrl.times" ng-bind="t"/>-->
+		<li ng-repeat="t in ctrl.times">{{t}}</li>
+	</ol>
+
+	<h4>Lista de Clientes</h4>
+	<ol>
+		<!--<li ng-repeat="t in ctrl.times" ng-bind="t"/>-->
+		<li ng-repeat="t in ctrl.clientes">{{t.nome}} - {{t.email}}</li>
+	</ol>
+
+	<!--
+	{{1+2}}
+	<input type="text" ng-model="ctrl.nome"/>
+	<input type="button" value="Mostrar" ng-click="ctrl.mostrarNome()"/>
+	<h1>Olá <span ng-bind="ctrl.nome"/></h1>
+	{{nome}}
+		
+	<br/>
+	<h1>Soma de dois números</h1>
+	<input type="number" ng-model="numero1"/>
+	<input type="number" ng-model="numero2"/>
+	{{numero1+numero2}}
+	-->
+	<br />
+	<br />
+	<form ng-submit="ctrl.cadastrarWebService()" name="formCliente">
+		<input type="text" required ng-minlength="4"
+			ng-model="ctrl.cliente.nome" /> <input type="date"
+			ng-model="ctrl.cliente.dataNascimento" /> <input type="email"
+			ng-model="ctrl.cliente.email" /> <input type="submit" value="Enviar"
+			ng-disabled="formCliente.$invalid" />
+	</form>
+
+
+	<table border="1">
+		<th>Nome</th>
+		<th>Email</th>
+		<tr ng-repeat="cli in ctrl.clientes">
+			<td>{{cli.nome}}</td>
+			<td>{{cli.email}}</td>
+			<td><input type="button"
+				ng-click="ctrl.mostrarSelecionado($index)" value="Mostrar" /></td>
+			<td><input type="button" ng-click="ctrl.remover($index)"
+				value="Remover" /></td>
+
+		</tr>
+
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

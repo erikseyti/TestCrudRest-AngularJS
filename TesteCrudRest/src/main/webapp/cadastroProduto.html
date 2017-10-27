@@ -1,0 +1,123 @@
+<html ng-app="primeiroModulo">
+<head>
+<meta charset="UTF-8" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+<script type="text/javascript">
+	angular.module('primeiroModulo', []).controller('controleProdutos', ['$http',function($http){
+		self = this;
+		self.listaProduto = [];
+		var url="http://localhost:8080/TesteCrudRest/resource/produto/";
+		
+		self.enviar=function(){
+			//self.listaProduto.push(self.produto);	
+			if(self.produto.id == undefined){
+			$http.post(url+"inserir", 
+					self.produto).then(function(response){		 				
+		 				console.log('chamou o web service: '+response.data);
+						self.buscar();
+			 			}, function(errResponse){
+		 				console.error('Erro ao chamar o web service');
+		 	});
+			}else{
+				$http.put(url+"alterar", 
+						self.produto).then(function(response){		 				
+			 				console.log('chamou o web service: '+response.data);
+							self.buscar();
+				 			}, function(errResponse){
+			 				console.error('Erro ao chamar o web service');
+			 	});
+				}
+			self.produto='';
+		};
+
+			self.buscar=function(){
+				//self.listaProduto.push(self.produto);	
+				$http.get(url+"lista_produtos").then(function(response){		 				
+			 				console.log('chamou o web service: '+response.data);
+							self.listaProduto=response.data;
+				 			}, function(errResponse){
+			 				console.error('Erro ao chamar o web service');
+			 	});
+			};
+
+			self.alterar=function(prod){
+				self.produto=prod;
+				};
+
+			self.excluir = function(prod){
+				var confirma=confirm('Deseja Excluir??');
+				if(confirma){
+				$http.delete(url+"excluir/"+prod.id).then(function(response){		 				
+	 				console.log('chamou o web service: '+response.data);
+					self.buscar();
+		 			}, function(errResponse){
+	 				console.error('Erro ao chamar o web service');
+	 			});
+				}
+			};	
+					 	
+			
+
+		
+
+// 		self.consultar = function(){
+// 			$http.get("http://localhost:8080/TesteCrudRest/resource/produto/lista_produtos").then(function(response){		 				
+// 		 				self.listaProduto = response.data;
+// 		 				console.log('Pro '+self.listaProduto);
+// 		 			}, function(errResponse){
+// 		 				console.error('Erro ao chamar o web service');
+// 		 	});	
+// 			};
+		
+	}]);
+
+</script>
+
+</head>
+
+<body ng-controller="controleProdutos as ctrl" ng-init="ctrl.buscar()">
+
+	<h4>Cadastro de Produtos</h4>
+
+
+	<br />
+	<form name="formProduto" ng-submit="ctrl.enviar()">
+		Descrição:<input type="text" ng-model="ctrl.produto.descricao" /> <br />
+		<br /> Quantidade Estoque:<input type="number"
+			ng-model="ctrl.produto.estoque" /><br /> <br /> Valor Unitário:<input
+			type="number" ng-model="ctrl.produto.valor" /><br /> <br /> <input
+			type="submit" value="Cadastrar" />
+	</form>
+
+	<hr></hr>
+
+	<table border="1">
+		<th>Descrição</th>
+		<th>Qtde. Estoque</th>
+		<th>Valor unitário</th>
+		<th>Opções</th>
+		<tr ng-repeat="prod in ctrl.listaProduto">
+			<td>{{prod.descricao}}</td>
+			<td>{{prod.estoque}}</td>
+			<td>{{prod.valor}}</td>
+			<td><a href="" ng-click="ctrl.alterar(prod)">Alterar</a> <a
+				href="" ng-click="ctrl.excluir(prod)">Excluir</a></td>
+		</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

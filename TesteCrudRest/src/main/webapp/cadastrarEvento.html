@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="ModuloEvento">
+<head>
+<meta charset="ISO-8859-1">
+<title>Cadastro de Candidatos</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+	<script type="text/javascript">
+	angular.module('ModuloEvento', []).controller('controleCandidatos', ['$http',function($http){
+		self = this;
+		self.listaProduto = [];
+		var url="http://localhost:8080/TesteCrudRest/resource/candidato/";
+
+
+	
+	self.enviar=function(){
+			//self.listaProduto.push(self.produto);	
+			if(self.candidato.id == undefined){
+			$http.post(url+"inserir", 
+					self.candidato).then(function(response){		 				
+		 				console.log('chamou o web service: '+response.data);
+						self.buscar();
+			 			}, function(errResponse){
+		 				console.error('Erro ao chamar o web service');
+		 	});
+			}else{
+				$http.put(url+"alterar", 
+						self.candidato).then(function(response){		 				
+			 				console.log('chamou o web service: '+response.data);
+							self.buscar();
+				 			}, function(errResponse){
+			 				console.error('Erro ao chamar o web service');
+			 	});
+				}
+			self.candidato='';
+		};
+	
+		</script>
+</head>
+<body>
+
+<h4>Cadastro de Candidatos</h4>
+
+	<br />
+	<form name="formCandidatos" ng-submit="ctrl.enviar()">
+	Nome:<input type="text" ng-model="ctrl.candidato.nome"/><br/>
+	CPF:<input type="text" ng-model="ctrl.candidato.cpf"/><br/>
+	Email:<input type="text" ng-model="ctrl.candidato.email"/><br/>
+	Telefone:<input type="tel" ng-model="ctrl.candidato.telefone"/><br/>
+	Evento: <input type="text" ng-model="ctrl.candidato.evento" /><br/>
+	Instuição de Origem:<input type="text" ng-model="ctrl.candidato.instituicaoOrigem"/>
+	
+	<br/>
+	 <input
+			type="submit" value="Cadastrar" />
+	</form>
+
+</body>
+</html>
